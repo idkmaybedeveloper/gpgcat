@@ -29,22 +29,34 @@ go build -o gpgcat .
 ## usage!!
 
 ```bash
+# vanity base64 line + message
+gpgcat -v "++lain++meow++" -m "mreow" < key.asc > fancy.asc
+
+# color stripes + message
+gpgcat -c "161,161,93,21,21" -m "bip boop" < key.asc
+
 # just text
 gpgcat -m "meow :3" < key.asc > fancy.asc
 
-# flag + message
-gpgcat -c "161, 161, 93, 21, 21" -m "bip boop" < key.asc
-
-# ansi escape sequence
-gpgcat -ansi "\e[5;31m" -m "ALERT" < key.asc > out.asc
-
 # from gpg directly
-gpg --export -a YOUR_KEY_ID | gpgcat -m "uwu" > fancy.asc
+gpg --export -a YOUR_KEY_ID | gpgcat -v "uwu" -m "hi" > fancy.asc
 ```
+
+## vanity
+
+`-v` embeds readable text in the first base64 line:
+```
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+yzj+Ju/0+/0+/0+/0+/0+/0+/++lain++meow+++/0+/0+/0+/0+/0+/NNNNNBtb
+                           ^^^^^^^^^^^^^^
+```
+
+only A-Za-z0-9+/ allowed (base64 charset)
 
 ## colors
 
-use 256-color codes (0-255), comma-sep. each color = one horizontal stripe
+256 color codes (0-255), comma-sep. each = one horizontal stripe
 
 ref: https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 

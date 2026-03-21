@@ -21,6 +21,7 @@ func main() {
 	colors := flag.String("c", "", "color stripes (comma-separated 256-color codes)")
 	message := flag.String("m", "", "message to display")
 	customANSI := flag.String("ansi", "", "raw ansi escape sequence")
+	vanity := flag.String("v", "", "vanity text for base64 line (A-Za-z0-9+/ only)")
 	inputFile := flag.String("i", "", "input file (default: stdin)")
 	outputFile := flag.String("o", "", "output file (default: stdout)")
 
@@ -37,25 +38,28 @@ OPTIONS
 
 		fmt.Fprint(os.Stderr, `
 EXAMPLES
-  # bi flag (magenta, magenta, purple, blue, blue)
-  gpgcat -c "161, 161, 93, 21, 21" -m "bip boop" < key.asc
+  # vanity base64 line + message
+  gpgcat -v "lain/meow/uwu" -m "mreow" < key.asc
 
-  # Just a message
+  # color stripes + message
+  gpgcat -c "161,161,93,21,21" -m "bip boop" < key.asc
+
+  # just a message
   gpgcat -m "meow :3" < key.asc
-
-  # custom ansi (blink + red text)
-  gpgcat -ansi "\e[5;31m" -m "idk alert" < key.asc
 
   # verify it works
   cat out.asc | gpg
 
+VANITY
+  first line of base64 will contain your text (A-Za-z0-9+/ only)
+  example: -v "++lain++meow++"
+
 COLORS
-  us 256 color codes (0-255). each color = one stripe
-  reference: https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+  256 color codes (0-255), each = one stripe
+  ref: https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 
 NOTE
-  Use 'cat key.asc | gpg' (pipe), not 'gpg key.asc' (file arg)
-  the latter doesnt output literal data to terminal...
+  use 'cat key.asc | gpg' (pipe), not 'gpg key.asc' (file arg)
 `)
 	}
 
@@ -114,8 +118,19 @@ NOTE
 		payload = generatePlainText(*message)
 	}
 
-	/* prepend literal data packet and re-armor */
-	modified := prependToKey(keyData, payload)
+	/* build packet and prepend to key */
+	var modified []byte
+	if *vanity != "" {
+		packet, err := buildVanityPacket(*vanity, payload)
+		if err != nil {
+			logger.Error("vanity error", "err", err)
+			os.Exit(1)
+		}
+		modified = append(packet, keyData...)
+	} else {
+		modified = prependToKey(keyData, payload)
+	}
+
 	armored := armor(modified, "PGP PUBLIC KEY BLOCK")
 
 	/* write output */
