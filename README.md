@@ -4,17 +4,7 @@ embed custom messages and art into PGP public keys
 
 when someone runs `cat yourkey.asc | gpg`, theyll see your message before the key info
 
-```
-$ cat fancy.asc | gpg
-     <- colored stripe
-     <- colored stripe
-     <- ...
-meow :3
-pub   ed25519 2023-02-01 [SCA]
-      7E63DA22964F4E9B1FF547E1BF78000000000000
-uid           You <you@example.com>
-```
-
+![:3](![:3](https://shit.cuddles.rs/somestatics/gpgcat-screenshot.png))
 ## inst
 
 ```bash
