@@ -4,7 +4,8 @@ embed custom messages and art into PGP public keys
 
 when someone runs `cat yourkey.asc | gpg`, theyll see your message before the key info
 
-![:3](https://shit.cuddles.rs/somestatics/gpgcat-screenshot.png)
+<img src="https://shit.cuddles.rs/somestatics/gpgcat-screenshot.png" alt=":3" width="450" />
+
 ## inst
 
 ```bash
