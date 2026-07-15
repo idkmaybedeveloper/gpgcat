@@ -2,9 +2,10 @@
 
 embed custom messages and art into PGP public keys
 
-when someone runs `cat yourkey.asc | gpg`, theyll see your message before the key info
+when someone runs `cat yourkey.asc | gpg`, theyll see your message before the
+key info
 
-<img src="https://shit.cuddles.rs/somestatics/gpgcat-screenshot.png" alt=":3" width="450" />
+<img src="http://shit.cuddles.rs/somestatics/gpgcat-screenshot.png" alt=":3" width="450" />
 
 ## inst
 
@@ -13,6 +14,7 @@ go install code.wejust.rest/lain/gpgcat@latest
 ```
 
 or... build from source:
+
 ```bash
 go build -o gpgcat .
 ```
@@ -36,6 +38,7 @@ gpg --export -a YOUR_KEY_ID | gpgcat -v "uwu" -m "hi" > fancy.asc
 ## vanity
 
 `-v` embeds readable text in the first base64 line:
+
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -53,12 +56,12 @@ ref: https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 
 ## how it works???
 
-openpgp format allows "literal data packets" (tag 11) anywhere in the
-packet stream. when gpg reads one from stdin, it outputs the raw bytes
-to stdout. we prepend such a packet containing ansi escape codes +
-your message. the key itself remains valid and importable
+openpgp format allows "literal data packets" (tag 11) anywhere in the packet
+stream. when gpg reads one from stdin, it outputs the raw bytes to stdout. we
+prepend such a packet containing ansi escape codes + your message. the key
+itself remains valid and importable
 
 ## IMPORTANT!!!
 
-use `cat key.asc | gpg` (pipe), not `gpg key.asc` (file argument).
-only the pipe method outputs literal data to terminal
+use `cat key.asc | gpg` (pipe), not `gpg key.asc` (file argument). only the pipe
+method outputs literal data to terminal
